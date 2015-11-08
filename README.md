@@ -10,9 +10,9 @@ Installation
 
 Clone the repo:
 
-    $ git clone https://github.com/gunzy83/ansible-roles-secure-shell ~/projects/ansible-roles-secure-shell
+    $ git clone https://github.com/gunzy83/ansible-roles-secure-shell.git ~/projects/ansible-roles-secure-shell
 
-Then add the path to your *ansible.cfg* file:
+Then add the path to your **ansible.cfg** file:
 
     roles_path = ~/projects/ansible-roles-secure-shell
 
