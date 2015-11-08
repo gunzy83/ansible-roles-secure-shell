@@ -1,0 +1,16 @@
+{% if ssh_client_github %}
+Host github.com
+    KexAlgorithms {{ ssh_client_github_kex }}
+{% endif %}
+
+Host *
+    PasswordAuthentication no
+    ChallengeResponseAuthentication {% if ssh_client_challenge_resp_auth %}yes
+    {% else %}no
+    {% endif %}
+    PubkeyAuthentication yes
+    HostKeyAlgorithms {{ ssh_client_host_key_algorithms }}
+    KexAlgorithms {% if ssh_client_compat %}{{ ssh_client_compat_kex_algorithms }}{% else %}{{ ssh_client_kex_algorithms }}{% endif %}
+    
+    Ciphers {{ ssh_client_ciphers }}
+    MACs {{ ssh_client_macs }}

@@ -1,0 +1,59 @@
+---
+- name: Include specific variables for the system
+  include_vars: "{{ item }}"
+  with_first_found:
+   - "{{ ansible_distribution }}.yml"
+   - "{{ ansible_os_family }}.yml"
+   - "default.yml"
+
+- include: apt.yml
+  when: ansible_pkg_mgr == 'apt'
+- include: yum.yml
+  when: ansible_pkg_mgr == 'yum'
+- include: pacman.yml
+  when: ansible_pkg_mgr == 'pacman'
+
+- name: Enable the service
+  service:
+    name: "{{ ssh_server_service_name }}"
+    enabled: yes
+    state: started
+
+- name: Get the size of the host RSA key (force key regen if too small)
+  shell: "ssh-keygen -l -f {{ ssh_server_host_rsa | quote }} | awk '{print $1}'"
+  register: rsa_size
+  changed_when: rsa_size.stdout_lines[0] != '4096'
+  notify: Reload the SSH service
+
+- name: Remove existing RSA key if existing key is not big enough
+  shell: "rm ssh_host_*key*"
+  args:
+    chdir: "{{ ssh_server_config_path }}"
+    removes: "{{ ssh_server_host_rsa }}"
+  when: rsa_size.stdout_lines[0] != '4096'
+
+- name: Create new RSA key if existing key is not big enough
+  shell: "ssh-keygen -t rsa -b 4096 -f {{ ssh_server_host_rsa | quote }} -N '' < /dev/null"
+  when: rsa_size.stdout_lines[0] != '4096'
+
+- name: Get the size of the host Ed25519 key
+  stat: 
+    path: "{{ ssh_server_host_ed25519 }}"
+  register: ed25519
+
+- name: Create new Ed25519 key if key does not exist
+  shell: "ssh-keygen -t ed25519 -f {{ ssh_server_host_ed25519 | quote }} -N '' < /dev/null"
+  when: not ed25519.stat.exists
+
+- name: Ensure sshd_config is deployed
+  template:
+    src: sshd_config.j2
+    dest: "{{ssh_server_config_file}}"
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify: Reload the SSH service
+
+- include: moduli.yml
+  when: ssh_server_compat

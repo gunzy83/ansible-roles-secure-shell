@@ -1,0 +1,31 @@
+AuthorizedKeysFile      .ssh/authorized_keys
+
+UsePAM yes
+
+PrintMotd no # assume that pam does that
+
+UsePrivilegeSeparation sandbox          # Default for new installations.
+
+# override default of no subsystems
+Subsystem       sftp    /usr/lib/ssh/sftp-server
+
+Protocol 2
+PasswordAuthentication no
+ChallengeResponseAuthentication {% if ssh_server_challenge_resp_auth %}yes
+{% else %}no
+{% endif %}
+PubkeyAuthentication yes
+
+{% if ssh_server_allow_users %}
+AllowUsers{% for user in ssh_server_allow_users %} {{ user }}{% endfor %}
+{% else %}
+AllowGroups{% for group in ssh_server_allow_groups %} {{ group }}{% endfor %}
+{% endif %}
+
+HostKey {{ ssh_server_host_ed25519 }}
+HostKey {{ ssh_server_host_rsa }}
+
+KexAlgorithms {% if ssh_server_compat %}{{ ssh_server_compat_kex_algorithms }}{% else %}{{ ssh_server_kex_algorithms }}{% endif %}
+
+Ciphers {{ ssh_server_ciphers }}
+MACs {{ ssh_server_macs }}

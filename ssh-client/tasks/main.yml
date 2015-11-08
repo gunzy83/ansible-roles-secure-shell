@@ -1,0 +1,22 @@
+---
+- name: Include specific variables for the system
+  include_vars: "{{ item }}"
+  with_first_found:
+   - "{{ ansible_distribution }}.yml"
+   - "{{ ansible_os_family }}.yml"
+   - "default.yml"
+   
+- include: apt.yml
+  when: ansible_pkg_mgr == 'apt'
+- include: yum.yml
+  when: ansible_pkg_mgr == 'yum'
+- include: pacman.yml
+  when: ansible_pkg_mgr == 'pacman'
+
+- name: Ensure ssh_config is deployed
+  template:
+    src: ssh_config.j2
+    dest: "{{ssh_client_config_file}}"
+    owner: root
+    group: root
+    mode: 0644

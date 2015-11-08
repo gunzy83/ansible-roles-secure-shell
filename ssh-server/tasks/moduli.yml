@@ -1,0 +1,39 @@
+---
+- name: Check if moduli file exists
+  stat:
+    path: "{{ ssh_server_moduli_file }}"
+  register: moduli_file
+
+- name: Remove any lines with key length less than 2048
+  replace:
+    regexp: "{{ ssh_server_moduli_regex }}"
+    dest: "{{ ssh_server_moduli_file }}"
+    backup: "{{ ssh_server_moduli_backup }}"
+  when: moduli_file.stat.exists
+  notify: Reload the SSH service
+
+- name: Generate candidate primes
+  shell: "ssh-keygen -G {{ ssh_server_moduli_file_all | quote }} -b {{ ssh_server_moduli_keysize | quote }}"
+  args:
+    creates: "{{ ssh_server_moduli_file_all }}"
+  when: not moduli_file.stat.exists
+
+- name: Test DH group exchange candidate primes
+  shell: "ssh-keygen -T {{ ssh_server_moduli_file_safe | quote }} -f {{ ssh_server_moduli_file_all | quote }}"
+  args:
+    creates: "{{ ssh_server_moduli_file_safe }}"
+  when: not moduli_file.stat.exists
+
+- name: Move tested primes file into place
+  shell: "mv {{ ssh_server_moduli_file_safe | quote }} {{ ssh_server_moduli_file | quote }}"
+  args:
+    creates: "{{ ssh_server_moduli_file }}"
+    removes: "{{ ssh_server_moduli_file_safe }}"
+  when: not moduli_file.stat.exists
+  notify: Reload the SSH service
+
+- name: Remove untested primes file
+  file:
+    path: "{{ ssh_server_moduli_file_all }}"
+    state: absent
+  when: not moduli_file.stat.exists
