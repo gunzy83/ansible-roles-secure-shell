@@ -5,12 +5,17 @@
    - "{{ ansible_distribution }}.yml"
    - "{{ ansible_os_family }}.yml"
    - "default.yml"
-   
-- include: apt.yml
+
+- name: Install with apt
+  include: apt.yml
   when: ansible_pkg_mgr == 'apt'
-- include: yum.yml
+  
+- name: Install with yum
+  include: yum.yml
   when: ansible_pkg_mgr == 'yum'
-- include: pacman.yml
+
+- name: Install with pacman
+  include: pacman.yml
   when: ansible_pkg_mgr == 'pacman'
 
 - name: Ensure ssh_config is deployed
