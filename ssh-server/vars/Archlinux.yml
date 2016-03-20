@@ -1,3 +1,4 @@
 ---
 ssh_server_package: openssh
 ssh_server_service_name: sshd
+ssh_server_sftp_path: /usr/lib/ssh/sftp-server

@@ -7,7 +7,7 @@ PrintMotd no # assume that pam does that
 UsePrivilegeSeparation sandbox          # Default for new installations.
 
 # override default of no subsystems
-Subsystem       sftp    /usr/lib/ssh/sftp-server
+Subsystem       sftp    {{ ssh_server_sftp_path }}
 
 Protocol 2
 PasswordAuthentication no
