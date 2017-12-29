@@ -2,21 +2,12 @@
 - name: Include specific variables for the system
   include_vars: "{{ item }}"
   with_first_found:
-   - "{{ ansible_distribution }}.yml"
-   - "{{ ansible_os_family }}.yml"
+   - "{{ ansible_distribution | lower }}.yml"
+   - "{{ ansible_os_family | lower }}.yml"
    - "default.yml"
 
-- name: Install with apt
-  include: apt.yml
-  when: ansible_pkg_mgr == 'apt'
-  
-- name: Install with yum
-  include: yum.yml
-  when: ansible_pkg_mgr == 'yum'
-
-- name: Install with pacman
-  include: pacman.yml
-  when: ansible_pkg_mgr == 'pacman'
+- name: Include distro specific install tasks
+  include: "{{ ansible_pkg_mgr }}.yml"
 
 - name: Ensure ssh_config is deployed
   template:

@@ -8,7 +8,7 @@ ssh_client_host_key_algorithms: ssh-ed25519-cert-v01@openssh.com,ssh-rsa-cert-v0
 ssh_client_kex_algorithms: curve25519-sha256@libssh.org
 ssh_client_compat_kex_algorithms: curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
 ssh_client_ciphers: chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
-ssh_client_macs: hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com
+ssh_client_macs: hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com
 
 ssh_client_github: yes
 ssh_client_github_kex: curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1

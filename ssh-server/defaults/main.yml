@@ -10,8 +10,7 @@ ssh_server_host_ed25519: "{{ ssh_server_config_path }}/ssh_host_ed25519_key"
 ssh_server_kex_algorithms: curve25519-sha256@libssh.org
 ssh_server_compat_kex_algorithms: curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
 ssh_server_ciphers: chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
-ssh_server_macs: hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com
-
+ssh_server_macs: hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com
 # Match lines with key length 2047 and below
 ssh_server_moduli_regex: '^[0-9]*[ ][0-9]*[ ][0-9]*[ ][0-9]*[ ]\b(0*(?:[0-9]|[1-9][0-9]|[1-9][0-9]{2}|1[0-9]{3}|20[0-3][0-9]|204[0-7]))\b[ ][0-9]*[ ].*\n'
 ssh_server_moduli_file: "{{ ssh_server_config_path }}/moduli"
