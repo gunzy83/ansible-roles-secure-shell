@@ -7,7 +7,10 @@
    - "default.yml"
 
 - name: Include distro specific install tasks
-  include: "{{ ansible_pkg_mgr }}.yml"
+  include: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_pkg_mgr }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
 
 - name: Enable the service
   service:

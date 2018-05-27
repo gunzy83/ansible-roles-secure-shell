@@ -1,0 +1,3 @@
+---
+- name: Install the openssh-server package with eopkg
+  command: "eopkg install -y {{ ssh_server_package }}"
