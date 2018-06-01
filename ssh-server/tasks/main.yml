@@ -22,7 +22,11 @@
   shell: "ssh-keygen -l -f {{ ssh_server_host_rsa | quote }} | awk '{print $1}'"
   register: rsa_size
   changed_when: rsa_size.stdout_lines[0] != '4096'
-  notify: Reload the SSH service
+  notify: 
+    - Reload the SSH service
+    - Refresh facts
+    - Remove known host key on control machine
+    - Add known host key on control machine
 
 - name: Remove existing RSA key if existing key is not big enough
   shell: "rm ssh_host_*key*"

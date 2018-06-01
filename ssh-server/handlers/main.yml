@@ -3,3 +3,27 @@
   service:
     name: "{{ ssh_server_service_name }}"
     state: reloaded
+
+- name: Refresh facts
+  setup:
+
+- name: Remove known host key on control machine
+  known_hosts:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ ansible_fqdn }}"
+    - "{{ lookup('pipe', 'dig +short ' + ansible_fqdn|quote) }}"
+  delegate_to: 127.0.0.1
+  become: no
+
+- name: Add known host key on control machine
+  known_hosts:
+    name: "{{ item }}"
+    key: "{{ lookup('pipe', 'ssh-keyscan -H ' + item|quote) }}"
+    state: present
+  with_items:
+    - "{{ ansible_fqdn }}"
+    - "{{ lookup('pipe', 'dig +short ' + ansible_fqdn|quote) }}"
+  delegate_to: 127.0.0.1
+  become: no
